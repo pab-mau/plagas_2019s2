@@ -1,0 +1,61 @@
+import elementos.*
+import plagas.*
+
+test "elementos" {
+    
+    const hogar = new Hogar(nivelDeMugre=50, confort = 120)
+    const huerta = new Huerta(capacidadDeProduccion= 80, nivelASuperar= 110, nivelParaTodasLasHuertas=110)
+	const perro = new Mascota(nivelDeSalud=500)
+	
+	const barrio1 = new Barrios()
+	const barrio2 = new Barrios()
+	barrio1.agregarListaElementos([hogar,huerta,perro])
+	barrio2.agregarListaElementos([hogar,huerta,perro,new Mascota(nivelDeSalud=100),new Hogar(nivelDeMugre=60,confort=90)])
+	assert.that(hogar.esBueno())
+    assert.notThat(huerta.esBueno())
+    assert.that(perro.esBueno())
+    assert.that(barrio1.esCopado())
+    assert.notThat(barrio2.esCopado())
+}
+
+
+test "plagas y efectos"{
+	
+	const cucarachas = new PlagaDeCucarachas(poblacion=60, pesoDeCadaBicho = 8)
+	const pulgas = new PlagaDePulgas(poblacion = 50, pesoDeCadaBicho = 5 )
+	const garrapatas = new PlagaDeGarrapatas(poblacion = 40, pesoDeCadaBicho = 6)
+	const mosquitos = new PlagaDeMosquitos(poblacion = 19, pesoDeCadaBicho = 4)
+	const hogar = new Hogar(nivelDeMugre=50, confort = 120)
+    const huerta = new Huerta(capacidadDeProduccion= 80, nivelASuperar= 110, nivelParaTodasLasHuertas=110)
+	const perro = new Mascota(nivelDeSalud=500)
+	
+	
+	assert.equals(30 , cucarachas.danioQueProduce())
+	assert.that(cucarachas.transmiteEnfermedades())
+	assert.equals(100 , pulgas.danioQueProduce())
+	assert.that(pulgas.transmiteEnfermedades())
+	assert.equals(80 , garrapatas.danioQueProduce())
+	assert.that(garrapatas.transmiteEnfermedades())
+	assert.equals(19 , mosquitos.danioQueProduce())
+	assert.notThat(mosquitos.transmiteEnfermedades())
+	
+	
+	hogar.recibirAtaque(cucarachas)
+    huerta.recibirAtaque(pulgas)
+    perro.recibirAtaque(garrapatas)
+    
+    assert.equals(80 , hogar.nivelDeMugre())
+    assert.equals(66 , cucarachas.poblacion())
+    assert.equals(10 , cucarachas.pesoDeCadaBicho())
+    assert.equals(660 , cucarachas.pesoDeLaPlaga())
+    assert.notThat(hogar.esBueno())
+    
+    assert.equals(60 , huerta.capacidadDeProduccion())
+    assert.equals(55 , pulgas.poblacion())
+    
+    assert.equals(420 , perro.nivelDeSalud())
+    assert.equals(48 , garrapatas.poblacion())
+    
+
+	
+}
